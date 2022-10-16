@@ -5,18 +5,21 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Gideon-isa/banking/domian"
+	"github.com/Gideon-isa/banking/service"
 	"github.com/gorilla/mux"
 )
 
 func Start() {
 
-	//mux := http.NewServeMux()
-	//define routes
+	//
 	router := mux.NewRouter()
-	router.HandleFunc("/greet", greet).Methods(http.MethodGet)
-	router.HandleFunc("/customers", getAllCustomer).Methods("GET")
-	router.HandleFunc("/customers/{customer_id:[0-9]+}", getCustomer).Methods("GET")
-	router.HandleFunc("/customers", createCustomer).Methods(http.MethodPost)
+
+	//wiring
+	ch := CustomerHandelers{service: service.NewCustomerService(domian.NewCustomerRespositoryStub())}
+
+	//define routes
+	router.HandleFunc("/customers", ch.getAllCustomer).Methods("GET")
 
 	//starting server
 	fmt.Println("Sarting the Server....")
